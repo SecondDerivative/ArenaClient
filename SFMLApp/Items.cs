@@ -22,33 +22,36 @@ namespace SFMLApp
             restore = r;
             base.Create(n, i);
         }
-        public abstract void Consume(Inventory i);
-        public abstract void Consume(Player p);
+        //public abstract void Consume(Inventory i);
+        //public abstract void Consume(Player p);
     }
     public class ManaBottle : Bottle
     {
+        /*
         public override void Consume(Inventory i)
         {
             i.addMana(restore);
-        }
+        }*/
         public ManaBottle(string n, int i, int r)
         {
             Create(n, i, r);
         }
+        /*
         public override void Consume(Player p)
         {
             p.addedMana(restore);
-        }
+        }*/
     }
     public class HPBottle : Bottle
     {
-        public override void Consume(Player p)
+        /*public override void Consume(Player p)
         {
             p.HealHP(restore);
         }
         public override void Consume(Inventory ignored)
         {
         }
+        */
         public HPBottle(string n, int i, int r)
         {
             Create(n, i, r);
@@ -59,8 +62,8 @@ namespace SFMLApp
         public int Damage { get; protected set; }
         public int Range { get; protected set; }
         public int Reloading { get; private set; }
-        abstract public int attack();
-        abstract public int attack(Inventory i);
+        ///abstract public int attack();
+        //abstract public int attack(Inventory i);
         public void Create(int dmg, int ran, string name, int i, int RelodTime)
         {
             Damage = dmg;
@@ -90,13 +93,13 @@ namespace SFMLApp
         {
             base.Create(dmg, ran, n, id, kd);
         }
-        override public int attack() { return Damage; }
-        override public int attack(Inventory i) { return Damage; }
+        //override public int attack() { return Damage; }
+        //override public int attack(Inventory i) { return Damage; }
     }
     class ItemBow : Weapon
     {
         public ItemBow(string n, int dmg, int ran, int id, int kd) { base.Create(dmg, ran, n, id, kd); }
-        override public int attack(Inventory i)
+        /*override public int attack(Inventory i)
         {
             if (i.getArrowsAmount() > 0)
             {
@@ -105,7 +108,7 @@ namespace SFMLApp
             }
             else { return 0; }
         }
-        override public int attack() { return 0; }
+        override public int attack() { return 0; }*/
     }
     class Magic : Weapon
     {
@@ -118,7 +121,7 @@ namespace SFMLApp
             ManaCost = mana;
             Speed = speed;
         }
-        override public int attack(Inventory i)
+        /*override public int attack(Inventory i)
         {
             if (i.getMana() >= ManaCost)
             {
@@ -130,10 +133,12 @@ namespace SFMLApp
                 return 0;
             }
         }
+        
         override public int attack()
         {
             return 0;
         }
+        */
         public double speed()
         {
             return Speed;
@@ -142,8 +147,8 @@ namespace SFMLApp
     class Fist : Weapon
     {
         public Fist() { base.Create(2, 1, "Fist", 0, 1000); }
-        override public int attack() { return Damage; }
-        override public int attack(Inventory i) { return Damage; }
+        //override public int attack() { return Damage; }
+        //override public int attack(Inventory i) { return Damage; }
     }
 
     public static class Items

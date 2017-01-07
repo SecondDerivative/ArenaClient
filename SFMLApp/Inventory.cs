@@ -30,27 +30,27 @@ namespace SFMLApp
         {
             return inventory[currentArrow];
         }
-        public void addArrows(Arrow a, int i)
+        /*public void addArrows(Arrow a, int i)
         {
             inventory[a.id] += i;
-        }
+        }*/
         public Arrow getCurrentArrow()
         {
             return (Arrow)Items.allItems[currentArrow];
-        }
+        }/*
         public void setCurrentArrow(int i)
         {
             currentArrow = i;
-        }
+        }*/
         public int getMana()
         {
             return Mana;
-        }
+        }/*
         public void addMana(int i)
         {
             Mana += i;
         }
-
+        
         public void addItem(int id, int cnt)
         {
             if (Items.allItems[id] is ManaBottle)
@@ -75,7 +75,7 @@ namespace SFMLApp
         {
             addItem(id, 1);
         }
-
+        */
         public bool isInStock(int id)
         {
             return inventory[id] > 0;
@@ -95,7 +95,7 @@ namespace SFMLApp
         {
             return inventory[item.id];
         }
-
+        
         public void clearInventory()
         {
             for (int i = 1; i < totalNumberofItems; i++)
@@ -103,7 +103,7 @@ namespace SFMLApp
                 inventory[i] = 0;
             }
         }
-
+        /*
         public string LargeString()
         {
             StringBuilder ans = new StringBuilder();
@@ -123,5 +123,6 @@ namespace SFMLApp
         {
             return currentArrow.ToString();
         }
+        */
     }
 }

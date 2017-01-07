@@ -21,10 +21,10 @@ namespace SFMLApp
         private int Width, Height;
         private ControlState state;
         private Arena arena;
-        private Server server;
+        //private Server server;
 
-        const int CountPlayer = 2;
-        private int[] TagByNum;
+        //const int CountPlayer = 2;
+        //private int[] TagByNum;
 
         public Control(int Width, int Height)
         {
@@ -34,15 +34,15 @@ namespace SFMLApp
             view.InitEvents(Close, KeyDown, KeyUp, MouseDown, MouseUp, MouseMove);
             state = ControlState.BattleState;
             arena = new Arena();
-            server = new Server(CountPlayer, "127.0.0.1");
-            TagByNum = new int[CountPlayer];
-            for (int i = 0; i < CountPlayer; i++)
-                TagByNum[i] = -1;
-            server.Players[0].SetNotRemote();
+            //server = new Server(CountPlayer, "127.0.0.1");
+          //  TagByNum = new int[CountPlayer];
+          //  for (int i = 0; i < CountPlayer; i++)
+          //      TagByNum[i] = -1;
+            //server.Players[0].SetNotRemote();
             arena.NewMap("bag");
-            TagByNum[0] = arena.AddPlayer("prifio");
-            int tagbot = arena.AddPlayer("bot");
-            view.AddPlayer(TagByNum[0]);
+            //TagByNum[0] = arena.AddPlayer("prifio");
+            int tagbot = 1;// arena.AddPlayer("bot");
+            //view.AddPlayer(TagByNum[0]);
             view.AddPlayer(tagbot);
         }
 
@@ -53,7 +53,7 @@ namespace SFMLApp
                 arena.Update();
                 view.UpdateAnimation();
                 view.DrawBattle(arena.players, arena.Arrows, arena.Drops, arena.ArenaPlayer, arena.map.players, arena.map.arrows, arena.map.Field, arena.map.drops);
-                for (int i = 0; i < CountPlayer; i++)
+            /*    for (int i = 0; i < CountPlayer; i++)
                 {
                     if (server.Players[i].IsOnline)
                     {
@@ -76,6 +76,7 @@ namespace SFMLApp
                         TagByNum[i] = -1;
                     }
                 }
+                
                 var info = arena.GetAllInfo();
                 for (int i = 0; i < server.CountClient; i++)
                 {
@@ -84,12 +85,13 @@ namespace SFMLApp
                     if (server.Players[i].IsOnline)
                         server.Players[i].SendAsync(info[TagByNum[i]]);
                 }
+                */
             }
             if (time > 0)
                 view.DrawText((1000 / time).ToString(), 5, 5, 10, Fonts.Arial, Color.Black);
         }
 
-        public void MovePlayer(int tag, int Forw, int Left)
+       /* public void MovePlayer(int tag, int Forw, int Left)
         {
             var vect = view.AngleByMousePos(); //need change
             if (Utily.Hypot2(vect.Item1, vect.Item2) < 150)
@@ -102,8 +104,8 @@ namespace SFMLApp
             view.MovePlayer(tag, newvect);
             //need create Class for UserKeyBord State. change forward etc
         }
-
-        public void ReleaseKeyDown(int tag, int key)
+      */
+       /* public void ReleaseKeyDown(int tag, int key)
         {
             if (state == ControlState.BattleState)
             {
@@ -113,23 +115,18 @@ namespace SFMLApp
                     arena.ChangeArrow(tag, 1);
             }
         }
-
+        */
         public void KeyDown(object sender, KeyEventArgs e)
         {
-            server.Players[0].AddKey((int)e.Code);
-        }
-
-        public void ReleaseKeyUp(int tag, int key)
-        {
-
+            //server.Players[0].AddKey((int)e.Code);
         }
 
         public void KeyUp(object sender, KeyEventArgs e)
         {
-            server.Players[0].KeyUp((int)e.Code);
+        //    server.Players[0].KeyUp((int)e.Code);
         }
 
-        public void ReleaseMouseDown(int tag, int button)
+        /*public void ReleaseMouseDown(int tag, int button)
         {
             if (state == ControlState.BattleState)
             {
@@ -144,11 +141,11 @@ namespace SFMLApp
                 }
             }
         }
-
+       */
         public void MouseDown(object sender, MouseButtonEventArgs e)
         {
             view.OnMouseDown(ref e);
-            server.Players[0].MouseDown((int)e.Button);
+            //server.Players[0].MouseDown((int)e.Button);
         }
 
         public void MouseUp(object sender, MouseButtonEventArgs e)

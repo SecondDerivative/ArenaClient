@@ -14,7 +14,7 @@ namespace SFMLApp
 		public Player()
 		{
 			inventory = new Inventory();
-			inventory.addItem(Items.allItems[0]);
+			//inventory.addItem(Items.allItems[0]);
 			//setting Health to 100
 			Health = 100;
 			//setting fists as a weapon
@@ -25,6 +25,7 @@ namespace SFMLApp
             RightReloadTimer = new Stopwatch();
             RightReloadTimer.Start();
 		}
+        /*
         public int attack() {
             int total = 0;
             if (LeftReloadTimer.ElapsedMilliseconds >= ((Weapon)Items.allItems[leftHand]).Reloading)
@@ -55,9 +56,11 @@ namespace SFMLApp
 			else
 				Health = Health - dmg;
 		}
+        */
 		public bool isDead(){
 			return Health <= 0;
 		}
+        /*
 		public void takeItemLeft(Item i){
 			if (inventory.isInStock(i))
 				leftHand = i.id;
@@ -66,12 +69,14 @@ namespace SFMLApp
 			if (inventory.isInStock (i))
 				rightHand = i.id;
 		}
+        */
 		public Item getItemLeft(){
 			return inventory.getItem(leftHand);
 		}
 		public Item getItemRight(){
 			return inventory.getItem(rightHand);
 		}
+        /*
 		public void pickUpArrow(Arrow arrowType, int nArrowsPickedUp){
 			inventory.addArrows(arrowType, nArrowsPickedUp);
 		}
@@ -103,6 +108,8 @@ namespace SFMLApp
         {
             inventory.setCurrentArrow(i.id);
         }
+        */
+        /*
         public void respawn(){
 			Health = 100;
 			inventory.clearInventory ();
@@ -116,6 +123,7 @@ namespace SFMLApp
             inventory.addItem(10, 30);
             inventory.setCurrentArrow(10);
         }
+        */
         public double Speed()
         {
             //need change
@@ -155,6 +163,7 @@ namespace SFMLApp
                 --yk;
             rightHand = (yk + cntItem) % cntItem;
         }
+        /*
         public void NextArrow()
         {
             int yk = inventory.getCurrentArrow().id + 1;
@@ -171,6 +180,8 @@ namespace SFMLApp
                 --yk;
             inventory.setCurrentArrow(yk % cntItem);
         }
+        */
+        /*
         public string LargeString()
         {
             StringBuilder ans = new StringBuilder();
@@ -192,5 +203,6 @@ namespace SFMLApp
             ans.Append(inventory.SmallString());
             return ans.ToString();
         }
+        */
     }
 }

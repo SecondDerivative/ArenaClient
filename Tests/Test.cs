@@ -20,6 +20,7 @@ namespace Tests
         //control.UpDate(1000);
         //control.UpDate(40);
         //}
+        /*
         [Fact]
         public void TestMap()
         {
@@ -119,6 +120,6 @@ namespace Tests
             arena.RemovePlayer(tag3);
             arena.MovePlayer(tag1, new Tuple<double, double>(3, 4));
             arena.FirePlayer(tag2, new Tuple<double, double>(4, -3));
-        }
+        }*/
     }
 }

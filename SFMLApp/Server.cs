@@ -10,6 +10,7 @@ using System.Diagnostics;
 
 namespace SFMLApp
 {
+    /*
     public class Server
     {
         public PlayerServer[] Players { get; private set; }
@@ -53,7 +54,8 @@ namespace SFMLApp
             return i;
         }
     }
-
+    */
+    /*
     public class PlayerServer
     {
         public Tuple<int, int> MousePos { get; private set; }
@@ -181,4 +183,5 @@ namespace SFMLApp
             ReceiveTimer = new Stopwatch();
         }
     }
+    */
 }
