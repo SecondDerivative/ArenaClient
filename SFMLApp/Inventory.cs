@@ -124,5 +124,19 @@ namespace SFMLApp
             return currentArrow.ToString();
         }
         */
+        public void TakeSmallString(string s)
+        {
+            currentArrow = Utily.Parse(s);
+        }
+
+        public void TakeLargeString(string s)
+        {
+            var arr = s.Split(' ');
+            Mana = Utily.Parse(arr[0]);
+            currentArrow = Utily.Parse(arr[1]);
+            totalNumberofItems = Utily.Parse(arr[2]);
+            for (int i = 0; i < totalNumberofItems; ++i)
+                inventory[i] = Utily.Parse(arr[3 + i]);
+        }
     }
 }

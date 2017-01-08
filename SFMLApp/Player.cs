@@ -10,7 +10,8 @@ namespace SFMLApp
 		public Inventory inventory{ get; private set; }
 		public int leftHand{ get; private set; }
 		public int rightHand{ get; private set; }
-        private Stopwatch LeftReloadTimer, RightReloadTimer;
+        //private Stopwatch LeftReloadTimer, RightReloadTimer;
+        public int RightReload { get; private set; }
 		public Player()
 		{
 			inventory = new Inventory();
@@ -20,10 +21,10 @@ namespace SFMLApp
 			//setting fists as a weapon
 			leftHand = 0;
 			rightHand = 0;
-            LeftReloadTimer = new Stopwatch();
-            LeftReloadTimer.Start();
-            RightReloadTimer = new Stopwatch();
-            RightReloadTimer.Start();
+          //  LeftReloadTimer = new Stopwatch();
+          //  LeftReloadTimer.Start();
+          //  RightReloadTimer = new Stopwatch();
+          //  RightReloadTimer.Start();
 		}
         /*
         public int attack() {
@@ -124,18 +125,19 @@ namespace SFMLApp
             inventory.setCurrentArrow(10);
         }
         */
-        public double Speed()
+        /*public double Speed()
         {
             //need change
             return 0.1;
         }
+        */
         public double ArrowSpeed()
         {
             if (Items.allItems[rightHand] is Magic)
                 return ((Magic)Items.allItems[rightHand]).speed();
             return ((Arrow)Items.allItems[inventory.getCurrentArrow().id]).speed();
         }
-        public void HealHP(int HPHealed)
+        /*public void HealHP(int HPHealed)
         {
             if (Health + HPHealed >= MAX_HP)
             {
@@ -162,7 +164,7 @@ namespace SFMLApp
                 || Items.allItems[(yk + cntItem) % cntItem] is Arrow)
                 --yk;
             rightHand = (yk + cntItem) % cntItem;
-        }
+        }*/
         /*
         public void NextArrow()
         {
@@ -204,5 +206,23 @@ namespace SFMLApp
             return ans.ToString();
         }
         */
+        public void TakeSmallString(string s)
+        {
+            var pla_inv = s.Split('#');
+            var arr = pla_inv[0].Split(' ');
+            Health = Utily.Parse(arr[0]);
+            rightHand = Utily.Parse(arr[1]);
+            inventory.TakeSmallString(pla_inv[1]);
+        }
+
+        public void TakeLargeString(string s)
+        {
+            var pla_inv = s.Split('#');
+            var arr = pla_inv[0].Split(' ');
+            Health = Utily.Parse(arr[0]);
+            rightHand = Utily.Parse(arr[1]);
+            RightReload = Utily.Parse(arr[2]);
+            inventory.TakeLargeString(pla_inv[1]);
+        }
     }
 }
