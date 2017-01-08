@@ -30,7 +30,7 @@ namespace SFMLApp
 
         public void NewMap(string name)
         {
-            map = new Map("./data/Maps/" + name + ".txt");
+            /*map = new Map("./data/Maps/" + name + ".txt");
             foreach (var i in players)
             {
                 map.AddPlayer(i.Key);
@@ -44,7 +44,7 @@ namespace SFMLApp
                 int tag = Utily.GetTag();
                 map.SpawnDrops(i, tag);
                 Drops.Add(tag, new ADrop(map.dropSpawners[i].count, map.dropSpawners[i].id));
-            }
+            }*/
             //timer.Restart();
         }
         /*
@@ -76,7 +76,7 @@ namespace SFMLApp
         */
         public void Update()
         {
-            map.UpDate();
+            //map.UpDate();
           /*  MEvent Event;
             while ((Event = map.NextEvent()) != null)
             {

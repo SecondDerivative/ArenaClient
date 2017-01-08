@@ -20,12 +20,26 @@ namespace Tests
         //control.UpDate(1000);
         //control.UpDate(40);
         //}
-        /*
+        [Fact]
+        public void TestMapReadData()
+        {
+            var map = new Map("./data/maps/bag.txt");
+            map.readData("./data/maps/bag.txt;;;");
+            //map.SaveMap("D:/TestMapReadData1.txt");
+
+            map.readData("./data/maps/bag.txt;1.10.10.10;;");
+            //map.SaveMap("D:/TestMapReadData2.txt");
+
+            map.readData("./data/maps/bag.txt;1.10.10.5;1.15.15.5;1.20.20.10");
+            //map.SaveMap("D:/TestMapReadData3.txt");
+
+            map.readData("./data/maps/bag.txt;1.10.10.10,2.15.10.10,3.15.15.10;1.20.20.10,2.25.15.10;1.50.50.10");
+            //map.SaveMap("D:/TestMapReadData4.txt");
+        }
         [Fact]
         public void TestMap()
         {
-            var map = new Map("data/Maps/bag.txt");
-            Assert.True(map.getData() == "data/Maps/bag.txt;;;", "1 getData wrong " + map.getData());
+            var map = new Map("./data/Maps/bag.txt");
             bool IsFrame = true;
             for (int i = 0; i < map.Pheight; ++i)
                 IsFrame = IsFrame && !(map.Field[0][i].isEmpty);
@@ -39,25 +53,9 @@ namespace Tests
             for (int i = 0; i < map.Pwidth; ++i)
                 IsFrame = IsFrame && !(map.Field[i][map.Pheight - 1].isEmpty);
             Assert.True(IsFrame, "Bad bottom");
-            map.UpDate(10);
-            Assert.True(map.getData() == "data/Maps/bag.txt;;;", "2 getData wrong " + map.getData());
-            map.SpawnDrops(1, 10, 20);
-            Assert.True(map.getData() == "data/Maps/bag.txt;1.10.20.10;;", "3 getData wrong " + map.getData());
-            map.AddPlayer(1);
-            Assert.True(map.getData() == "data/Maps/bag.txt;1.10.20.10;;", "4 getData wrong " + map.getData());
-            map.SpawnPlayer(1, 10, 10);
-            Assert.True(map.getData() == "data/Maps/bag.txt;1.10.20.10;;1.10.10.10", "5 getData wrong " + map.getData());
-            map.SpawnDrops(2, 20, 10);
-            map.AddPlayer(2);
-            map.SpawnPlayer(2, 20, 20);
-            Assert.True(map.getData() == "data/Maps/bag.txt;1.10.20.10,2.20.10.10;;1.10.10.10,2.20.20.10", "6 getData wrong " + map.getData());
-            map.FirePlayer(1, 1, 10, 10);
-            map.NextEvent();
-            map.UpDate(100);
-            map.StopPlayer(1);
-            map.UpDate(10);
-            map.UpDate();
-        }
+
+
+        }/*
         [Fact]
         public void TestEvents()
         {
@@ -72,21 +70,20 @@ namespace Tests
             var NewEv = (MEventDrop)ev;
             Assert.True(NewEv.TagPlayer == 0);
             Assert.True(NewEv.TagDrop == 1);
-        }
+        }*/
         [Fact]
-        public void TestMapSave()
+        public void TestMapLoad()
         {
             var map = new Map(1000, 700);
-            map.AddPlayer(1);
-            map.AddPlayer(2);
             map.SpawnPlayer(1, 10, 20);
-            map.SpawnPlayer(2, 30, 60);
-            map.FirePlayer(1, 1, 1, 2);
-            map.MovePlayer(2, new Tuple<double, double>(-1, -2));
-            map.UpDate(5);
-            //map.SaveMap("D:/save.txt");
+            map.SpawnPlayer(2, 10, 25);
+            map.SpawnPlayer(3, 10, 30);
+            map.SpawnDrop(1, 15, 20);
+            map.SpawnDrop(2, 15, 25);
+            map.LoadMap("./data/Maps/bag.txt");
+            //map.SaveMap("D:/TestMapLoad.txt");
         }
-
+        /*
         [Fact]
         public void UtilyTest()
         {
