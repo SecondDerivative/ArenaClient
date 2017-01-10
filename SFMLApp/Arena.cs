@@ -10,9 +10,12 @@ namespace SFMLApp
     public class Arena
     {
         //public const int WaitRespawnDrop = 30000;
+        public Queue<int> ArrowEvent { get; private set; }
+        public Queue<int> DropEvent { get; private set; }
+        public Queue<int> PlayerEvent { get; private set; }
         public Map map { get; private set; }
         public Dictionary<int, Player> players { get; private set; }
-        public Dictionary<int, AArow> Arrows { get; private set; }
+        public Dictionary<int, AArrow> Arrows { get; private set; }
         public Dictionary<int, ADrop> Drops { get; private set; }
         public Dictionary<int, APlayer> ArenaPlayer { get; private set; }
         //private Stopwatch timer;
@@ -22,10 +25,10 @@ namespace SFMLApp
         {
             ArenaPlayer = new Dictionary<int, APlayer>();
             players = new Dictionary<int, Player>();
-            Arrows = new Dictionary<int, AArow>();
+            Arrows = new Dictionary<int, AArrow>();
             Drops = new Dictionary<int, ADrop>();
-          //  timer = new Stopwatch();
-        //    DropForRespawn = new Queue<Tuple<long, int>>();
+            //  timer = new Stopwatch();
+            //    DropForRespawn = new Queue<Tuple<long, int>>();
         }
 
         public void NewMap(string name)
@@ -38,7 +41,7 @@ namespace SFMLApp
             }
             Arrows.Clear();
             Drops.Clear();
-          //  DropForRespawn.Clear();
+            //  DropForRespawn.Clear();
             for (int i = 0; i < map.dropSpawners.Count; ++i)
             {
                 int tag = Utily.GetTag();
@@ -76,6 +79,7 @@ namespace SFMLApp
         */
         public void Update()
         {
+
             //map.UpDate();
           /*  MEvent Event;
             while ((Event = map.NextEvent()) != null)
@@ -119,6 +123,7 @@ namespace SFMLApp
                 map.SpawnDrops(num, tag);
                 Drops.Add(tag, new ADrop(map.dropSpawners[num].count, map.dropSpawners[num].id));
             }*/
+
         }
 
         public bool TagIsUse(int tag)
@@ -169,6 +174,133 @@ namespace SFMLApp
         {
             //map.Run();
             //timer.Start();
+        }
+        public void TakeString(string Arrow, string Drop, string Player)
+        {
+            var arr = Arrow.Split(',');
+            HashSet<int> IsUsed = new HashSet<int>();
+            for (int i = 0; i < arr.Length; i++)
+            {
+                var small = arr[i].Split(' ');
+                int tag = Utily.Parse(small[0]);
+                int dmg = Utily.Parse(small[1]);
+                int id = Utily.Parse(small[2]);
+                if (Arrows.ContainsKey(tag))
+                {
+                    Arrows[tag].dmg = dmg;
+                    Arrows[tag].id = id;
+                }
+                else
+                {
+                    Arrows.Add(tag, new AArrow(dmg, id));
+                    ArrowEvent.Enqueue(tag);
+                }
+                IsUsed.Add(tag);
+            }
+            List<int> ForRemove = new List<int>();
+            foreach (var i in Arrows)
+                if (!IsUsed.Contains(i.Key))
+                {
+                    ForRemove.Add(i.Key);
+                    ArrowEvent.Enqueue(-i.Key);
+                }
+            foreach (var i in ForRemove)
+                Arrows.Remove(i);
+
+            var dro = Drop.Split(',');
+            IsUsed.Clear();
+            for (int i = 0; i < arr.Length; i++)
+            {
+                var small = dro[i].Split(' ');
+                int tag = Utily.Parse(small[0]);
+                int cnt = Utily.Parse(small[1]);
+                int id = Utily.Parse(small[2]);
+                if (Drops.ContainsKey(tag))
+                {
+                    Drops[tag].Count = cnt;
+                    Drops[tag].id = id;
+                }
+                else
+                {
+                    Drops.Add(tag, new ADrop(cnt, id));
+                    DropEvent.Enqueue(tag);
+                }
+                IsUsed.Add(tag);
+            }
+            ForRemove.Clear();
+            foreach (var i in Drops)
+                if (!IsUsed.Contains(i.Key))
+                {
+                    ForRemove.Add(i.Key);
+                    DropEvent.Enqueue(-i.Key);
+                }
+            foreach (var i in ForRemove)
+                Drops.Remove(i);
+
+            var pla = Player.Split(',');
+            IsUsed.Clear();
+            for (int i = 0; i < arr.Length; i++)
+            {
+                var small = pla[i].Split(' ');
+                int tag = Utily.Parse(small[0]);
+                int kill = Utily.Parse(small[1]);
+                int death = Utily.Parse(small[2]);
+                if (ArenaPlayer.ContainsKey(tag))
+                {
+                    ArenaPlayer[tag].RealName = small[3];
+                    IsUsed.Add(tag);
+                }
+                else
+                    ArenaPlayer.Add(tag, new APlayer(small[3]));
+                ArenaPlayer[tag].Kill = kill;
+                ArenaPlayer[tag].Death = death;
+            }
+            ForRemove.Clear();
+            foreach (var i in ArenaPlayer)
+            {
+                if (!IsUsed.Contains(i.Key))
+                    ForRemove.Add(i.Key);
+            }
+            foreach (var i in ForRemove)
+                ArenaPlayer.Remove(i);
+        }
+        public int TakeAllString(string s)
+        {
+            var BigBlock = s.Split('#');
+            //map.TakeString(BigBlock[0]);
+            TakeString(BigBlock[1], BigBlock[2], BigBlock[3]);
+            var pla = BigBlock[4].Split(';');
+            HashSet<int> IsUsed = new HashSet<int>();
+            for (int i = 0; i < pla.Length; i++)
+            {
+                int ind = pla[i].IndexOf(' ');
+                int tag = Utily.Parse(pla[i].Substring(0, ind));
+                if (!players.ContainsKey(tag))
+                    players.Add(tag, new Player());
+                else
+                    IsUsed.Add(tag);
+                players[tag].TakeSmallString(pla[i].Substring(ind + 1));
+            }
+            int MainPlayerTag;
+            {
+                int ind = BigBlock[5].IndexOf(' ');
+                int tag = Utily.Parse(BigBlock[5].Substring(0, ind));
+                if (!players.ContainsKey(tag))
+                    players.Add(tag, new Player());
+                else
+                    IsUsed.Add(tag);
+                players[tag].TakeLargeString(BigBlock[5].Substring(ind + 1));
+                MainPlayerTag = tag;
+            }
+            List<int> ForRemove = new List<int>();
+            foreach (var i in players)
+            {
+                if (!IsUsed.Contains(i.Key))
+                    ForRemove.Add(i.Key);
+            }
+            foreach (var i in ForRemove)
+                players.Remove(i);
+            return MainPlayerTag;
         }
         /*
         public Dictionary<int, string> GetAllInfo()
@@ -252,15 +384,13 @@ namespace SFMLApp
         */
     }
 
-    public class AArow
+    public class AArrow
     {
         public int dmg { get; set; }
-        public int creater { get; set; }
-        public int id { get; private set; }
+        public int id { get; set; }
 
-        public AArow(int crt, int dmg, int id)
+        public AArrow(int dmg, int id)
         {
-            creater = crt;
             this.dmg = dmg;
             this.id = id;
         }
@@ -274,8 +404,8 @@ namespace SFMLApp
 
     public class ADrop
     {
-        public int Count { get; private set; }
-        public int id { get; private set; }
+        public int Count { get; set; }
+        public int id { get; set; }
         public ADrop(int cnt, int id)
         {
             Count = cnt;
@@ -290,9 +420,9 @@ namespace SFMLApp
 
     public class APlayer
     {
-        public int Kill { get; private set; }
-        public int Death { get; private set; }
-        public string RealName;
+        public int Kill { get; set; }
+        public int Death { get; set; }
+        public string RealName { get; set; }
         public APlayer(string name)
         {
             RealName = name;

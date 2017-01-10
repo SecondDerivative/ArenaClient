@@ -84,5 +84,15 @@ namespace SFMLApp
         {
             return i != 0;
         }
+
+        public static int Parse(string s)
+        {
+            int ans = 0;
+            for (int i = 0; i < s.Length; i++)
+            {
+                ans = ans * 10 + s[i] - '0';
+            }
+            return ans;
+        }
     }
 }

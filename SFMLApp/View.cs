@@ -114,7 +114,7 @@ namespace SFMLApp
 
         private Dictionary<int, PlayerView> viewPlayers;
 
-        public void DrawBattle(Dictionary<int, Player> Players, Dictionary<int, AArow> ArenaArrows, Dictionary<int, ADrop> ArenaDrops, Dictionary<int, APlayer> Aplayer,
+        public void DrawBattle(Dictionary<int, Player> Players, Dictionary<int, AArrow> ArenaArrows, Dictionary<int, ADrop> ArenaDrops, Dictionary<int, APlayer> Aplayer,
             Dictionary<int, MPlayer> MapPlayers, Dictionary<int, MArrow> MapArrows, List<List<Square>> Field, Dictionary<int, MDrop> MapDrops)
         {
             if (!WasInit)
