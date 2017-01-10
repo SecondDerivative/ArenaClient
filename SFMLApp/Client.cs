@@ -10,95 +10,60 @@ using System.Diagnostics;
 
 namespace SFMLApp
 {
-    /*
-    public class Server
+    public class Client
     {
-        public PlayerServer[] Players { get; private set; }
-
-        private Socket Listner;
+        public PlayerClient Player { get; private set; }
         
-        public int CountClient { get; private set; }
-
-        public Server(int cnt, string IP)
+        public Client(string IP)
         {
-            CountClient = cnt;
-            Players = new PlayerServer[cnt];
-            for (int i = 0; i < cnt; i++)
-            {
-                Players[i] = new PlayerServer();
-            }
-            Listner = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            Listner.Bind(new IPEndPoint(IPAddress.Parse(IP), 11000));
-            Listner.Listen(20);
+            Player = new PlayerClient();
         }
 
-        private Task<Socket> Listen()
+        private Task<Socket> TryConnect(string IP)
         {
+            Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            IPEndPoint ip = new IPEndPoint(IPAddress.Parse(IP), 11000);
             TaskCompletionSource<Socket> tcs = new TaskCompletionSource<Socket>();
-            Listner.BeginAccept(iar => {Listner.EndAccept(iar);
-                tcs.SetResult(Listner.EndAccept(iar));
-            }, Listner);
+            sock.BeginConnect(ip, iar =>
+            {
+                sock.EndConnect(iar);
+                tcs.SetResult(sock);
+            }, sock);
             return tcs.Task;
-        } 
+        }
 
-        public async Task<int> NextClient()
+        public async Task Connect(string IP)
         {
-            var sock = await Listen();
-            int i = 0;
-            while (i < CountClient && !Players[i].IsOnline)
-                ++i;
-            if (i == CountClient)
-                return -1;
-            Players[i] = new PlayerServer();
-            Players[i].SetOnlive(sock);
-            return i;
+            Socket sock = await TryConnect(IP);
+            Player.SetOnline(sock);
         }
     }
-    */
-    /*
-    public class PlayerServer
+
+    public class PlayerClient
     {
-        public Tuple<int, int> MousePos { get; private set; }
         public Queue<int> KeyDown { get; private set; }
         public bool IsOnline { get; private set; }
         public string Names { get; set; }
-        public bool IsRemote { get; set; }
-
-        public int Forward { get; private set; }
-        public int Left { get; private set; }
-
+        
         public Socket Socket { get; private set; }
         private Stopwatch ReceiveTimer;
 
         const int MaxBufferSize = 4096;
         const int MaxWaitTime = 5000;
-        public void SetOnlive(Socket sock)
+        public void SetOnline(Socket sock)
         {
             Socket = sock;
             IsOnline = true;
             ReceiveTimer.Start();
         }
-        public void SetNotRemote()
-        {
-            IsOnline = true;
-            IsRemote = false;
-        }
         public void CheckOnline()
         {
-            if (IsRemote && ReceiveTimer.ElapsedMilliseconds > MaxWaitTime)
+            if (ReceiveTimer.ElapsedMilliseconds > MaxWaitTime)
                 IsOnline = false;
         }
         public void AddKey(int key)
         {
-            KeyDown.Enqueue(key);
-            if (key == (int)Keyboard.Key.W)
-                Forward = 1;
-            if (key == (int)Keyboard.Key.S)
-                Forward = -1;
-            if (key == (int)Keyboard.Key.A)
-                Left = 1;
-            if (key == (int)Keyboard.Key.D)
-                Left = -1;
+            
         }
         public void MouseDown(int button)
         {
@@ -107,10 +72,7 @@ namespace SFMLApp
         }
         public void KeyUp(int key)
         {
-            if (key == (int)Keyboard.Key.W || key == (int)Keyboard.Key.S)
-                Forward = 0;
-            if (key == (int)Keyboard.Key.A || key == (int)Keyboard.Key.D)
-                Left = 0;
+            
         }
         public Task<int> TryReceiveAsync(byte[] buffer, int offset, int size, SocketFlags flags)
         {
@@ -172,16 +134,11 @@ namespace SFMLApp
                 left -= sended;
             }
         }
-        public PlayerServer()
+        public PlayerClient()
         {
             IsOnline = false;
-            IsRemote = true;
             Names = "";
-            MousePos = new Tuple<int, int>(0, 0);
-            KeyDown = new Queue<int>();
-            Forward = Left = 0;
             ReceiveTimer = new Stopwatch();
         }
     }
-    */
 }
