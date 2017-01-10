@@ -21,7 +21,8 @@ namespace SFMLApp
         private int Width, Height;
         private ControlState state;
         private Arena arena;
-        //private Server server;
+        private Client client;
+        public int MainPlayer { get; private set; }
 
         //const int CountPlayer = 2;
         //private int[] TagByNum;
@@ -34,16 +35,39 @@ namespace SFMLApp
             view.InitEvents(Close, KeyDown, KeyUp, MouseDown, MouseUp, MouseMove);
             state = ControlState.BattleState;
             arena = new Arena();
-            //server = new Server(CountPlayer, "127.0.0.1");
-          //  TagByNum = new int[CountPlayer];
-          //  for (int i = 0; i < CountPlayer; i++)
-          //      TagByNum[i] = -1;
-            //server.Players[0].SetNotRemote();
+            client = new Client();
+            client.Connect("127.0.0.1");
             arena.NewMap("bag");
             //TagByNum[0] = arena.AddPlayer("prifio");
-            int tagbot = 1;// arena.AddPlayer("bot");
             //view.AddPlayer(TagByNum[0]);
-            view.AddPlayer(tagbot);
+        }
+
+        public void PushEvent()
+        {
+            while (arena.ArrowEvent.Count > 0)
+            {
+                int ch = arena.ArrowEvent.Dequeue();
+                if (ch > 0)
+                    view.AddArrow(ch);
+                else
+                    view.RemoveArrow(-ch);
+            }
+            while (arena.DropEvent.Count > 0)
+            {
+                int ch = arena.DropEvent.Dequeue();
+                if (ch > 0)
+                    view.AddDrop(ch);
+                else
+                    view.RemoveDrop(-ch);
+            }
+            while (arena.PlayerEvent.Count > 0)
+            {
+                int ch = arena.PlayerEvent.Dequeue();
+                if (ch > 0)
+                    view.AddPlayer(ch);
+                else
+                    view.RemovePlayer(-ch);
+            }
         }
 
         public void UpDate(long time)
@@ -51,6 +75,9 @@ namespace SFMLApp
             if (state == ControlState.BattleState)
             {
                 arena.Update();
+                MainPlayer = arena.TakeAllString(client.Player.DataFromServer);
+                
+
                 view.UpdateAnimation();
                 view.DrawBattle(arena.players, arena.Arrows, arena.Drops, arena.ArenaPlayer, arena.map.players, arena.map.arrows, arena.map.Field, arena.map.drops);
             /*    for (int i = 0; i < CountPlayer; i++)
@@ -118,12 +145,14 @@ namespace SFMLApp
         */
         public void KeyDown(object sender, KeyEventArgs e)
         {
+            client.Player.AddKey((int)e.Code);
             //server.Players[0].AddKey((int)e.Code);
         }
 
         public void KeyUp(object sender, KeyEventArgs e)
         {
-        //    server.Players[0].KeyUp((int)e.Code);
+            //    server.Players[0].KeyUp((int)e.Code);
+            client.Player.KeyUp((int)e.Code);
         }
 
         /*public void ReleaseMouseDown(int tag, int button)
@@ -145,6 +174,7 @@ namespace SFMLApp
         public void MouseDown(object sender, MouseButtonEventArgs e)
         {
             view.OnMouseDown(ref e);
+            client.Player.MouseDown((int)e.Button);
             //server.Players[0].MouseDown((int)e.Button);
         }
 

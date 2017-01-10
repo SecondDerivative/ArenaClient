@@ -14,7 +14,7 @@ namespace SFMLApp
     {
         public PlayerClient Player { get; private set; }
         
-        public Client(string IP)
+        public Client()
         {
             Player = new PlayerClient();
         }
@@ -41,9 +41,10 @@ namespace SFMLApp
 
     public class PlayerClient
     {
-        public Queue<int> KeyDown { get; private set; }
+        public Queue<Tuple<int, TypeKeyDown> > KeyDown { get; private set; }
         public bool IsOnline { get; private set; }
         public string Names { get; set; }
+        public string DataFromServer { get; private set; }
         
         public Socket Socket { get; private set; }
         private Stopwatch ReceiveTimer;
@@ -63,16 +64,15 @@ namespace SFMLApp
         }
         public void AddKey(int key)
         {
-            
+            KeyDown.Enqueue(Utily.MakePair<int, TypeKeyDown>(key, TypeKeyDown.KeyDown));
         }
         public void MouseDown(int button)
         {
-            KeyDown.Enqueue(-1);
-            KeyDown.Enqueue(button);
+            KeyDown.Enqueue(Utily.MakePair<int, TypeKeyDown>(button, TypeKeyDown.MouseDown));
         }
         public void KeyUp(int key)
         {
-            
+            KeyDown.Enqueue(Utily.MakePair<int, TypeKeyDown>(key, TypeKeyDown.KeyUp));
         }
         public Task<int> TryReceiveAsync(byte[] buffer, int offset, int size, SocketFlags flags)
         {
@@ -109,7 +109,7 @@ namespace SFMLApp
         }
         public void ApplyString(string s)
         {
-            //decode
+            DataFromServer = s;
         }
         public Task<int> TrySendAsync(byte[] buffer, int offset, int size, SocketFlags flags)
         {
@@ -120,11 +120,19 @@ namespace SFMLApp
             }, Socket);
             return tcs.Task;
         }
-        public async Task SendAsync(string s)
+        public async Task SendAsync()
         {
             if (!IsOnline)
                 return;
-            byte[] data = Encoding.ASCII.GetBytes(s + '\n');
+            StringBuilder sb = new StringBuilder();
+            while (KeyDown.Count > 0)
+            {
+                var ob = KeyDown.Dequeue();
+                sb.AppendFormat("{0} {1} ", ob.Item1, (int)ob.Item2);
+            }
+            sb.Remove(sb.Length - 1, 1);
+            sb.Append('\n');
+            byte[] data = Encoding.ASCII.GetBytes(sb.ToString());
             int itt = 0;
             int left = data.Length;
             while (left > 0)
@@ -137,8 +145,17 @@ namespace SFMLApp
         public PlayerClient()
         {
             IsOnline = false;
-            Names = "";
+            DataFromServer = Names = "";
             ReceiveTimer = new Stopwatch();
         }
+    }
+
+    public enum TypeKeyDown
+    {
+        KeyDown,
+        KeyUp,
+        MouseDown,
+        MouseUp,
+        MouseMove
     }
 }
